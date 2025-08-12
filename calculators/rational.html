@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rational Method Calculator (Peak Discharge)</title>
+<meta name="description" content="Compute peak discharge using the Rational Method in US or SI units. Copy Excel formulas.">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<header><div class="container"><h1>Rational Method — Peak Discharge</h1><nav class="small">
+  <a href="../index.html">Home</a> · <a href="../pages/methods.html">Methods</a>
+</nav></div></header>
+
+<main class="container">
+  <div class="card">
+    <div class="pills"><span class="pill">US & SI</span><span class="pill">Excel-ready</span></div>
+    <div class="row">
+      <div>
+        <label>System</label>
+        <select id="ratSystem"><option value="US">US (cfs)</option><option value="SI">SI (m³/s)</option></select>
+      </div>
+      <div><label>C (runoff coefficient)</label><input id="ratC" type="number" step="0.01" placeholder="e.g., 0.7"></div>
+      <div><label>i (intensity)</label><input id="ratI" type="number" step="0.01" placeholder="US: in/hr · SI: mm/hr"></div>
+      <div><label>A (area)</label><input id="ratA" type="number" step="0.0001" placeholder="US: acres · SI: hectares"></div>
+    </div>
+    <div class="row">
+      <button id="ratCalc">Calculate</button>
+      <button id="ratCopy">Copy Excel formula</button>
+    </div>
+    <div id="ratResult" class="result"></div>
+  </div>
+  <div class="ad">Ad slot</div>
+  <div class="card small">Use i corresponding to the time of concentration.</div>
+</main>
+
+<script type="module">
+  import {on,setResult,fmt,copy,$} from '../assets/app.js';
+  import {rationalQ, excelTemplate} from '../calc/rational.js';
+  on('ratCalc','click', ()=>{
+    const sys = $('#ratSystem').value;
+    const C=+$('#ratC').value, i=+$('#ratI').value, A=+$('#ratA').value;
+    const Q = rationalQ(sys,C,i,A);
+    const unit = (sys==='US')?'cfs':'m³/s';
+    setResult('ratResult', isFinite(Q)? `Q = <b>${fmt(Q,5)} ${unit}</b>` : 'Check inputs.');
+  });
+  on('ratCopy','click', ()=>{
+    const sys = $('#ratSystem').value;
+    copy(excelTemplate(sys));
+  });
+</script>
+</body>
+</html>
