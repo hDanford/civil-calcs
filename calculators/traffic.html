@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Traffic Calculator — Future AADT & Peak Hour</title>
+<meta name="description" content="Project AADT with growth and compute peak hour, directional, and per-lane volumes.">
+<link rel="stylesheet" href="../assets/styles.css">
+</head><body>
+<header><div class="container"><h1>Traffic — AADT → PHV</h1><nav class="small">
+  <a href="../index.html">Home</a> · <a href="../pages/methods.html">Methods</a>
+</nav></div></header>
+<main class="container">
+  <div class="card">
+    <div class="grid-2">
+      <div><label>Base AADT</label><input id="A0" type="number" step="1" placeholder="e.g., 12000"></div>
+      <div><label>Annual growth g (%)</label><input id="g" type="number" step="0.01" placeholder="e.g., 2.5"></div>
+      <div><label>Years n</label><input id="n" type="number" step="1" placeholder="e.g., 10"></div>
+      <div><label>K (PHV/AADT)</label><input id="K" type="number" step="0.0001" placeholder="e.g., 0.10"></div>
+      <div><label>D (directional share)</label><input id="D" type="number" step="0.0001" placeholder="e.g., 0.55"></div>
+      <div><label>Lanes (per direction)</label><input id="L" type="number" step="1" placeholder="e.g., 2"></div>
+    </div>
+    <div class="row"><button id="calc">Calculate</button><button id="copy">Copy Excel</button></div>
+    <div id="out" class="result"></div>
+  </div>
+  <div class="ad">Ad slot</div>
+</main>
+<script type="module">
+  import {on,setResult,fmt,$,copy} from '../assets/app.js';
+  import {trafficCalc, excelTraffic} from '../calc/traffic.js';
+  on('calc','click', ()=>{
+    const A0=+$('#A0').value, g=+$('#g').value/100, n=+$('#n').value, K=+$('#K').value, D=+$('#D').value, L=+$('#L').value;
+    const res = trafficCalc(A0,g,n,K,D,L);
+    if(!res) return setResult('out','Check inputs.');
+    const {Af,PHV,Dir,PerLane} = res;
+    setResult('out',
+      `Future AADT = <b>${fmt(Af,0)}</b><br>`+
+      `PHV (both dirs) = <b>${fmt(PHV,0)}</b> veh/hr<br>`+
+      `Directional PHV = <b>${fmt(Dir,0)}</b> veh/hr<br>`+
+      `Per-lane (peak dir) = <b>${fmt(PerLane,0)}</b> veh/hr/lane`);
+  });
+  on('copy','click', ()=> copy(excelTraffic()));
+</script>
+</body></html>
