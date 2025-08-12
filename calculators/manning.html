@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manning Full-Pipe Calculator (Q & D)</title>
+<meta name="description" content="Compute pipe capacity (Q) or required diameter (D) for full circular pipes using Manning’s equation. US & SI.">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<header><div class="container"><h1>Manning — Full Circular Pipe</h1><nav class="small">
+  <a href="../index.html">Home</a> · <a href="../pages/methods.html">Methods</a>
+</nav></div></header>
+
+<main class="container">
+  <div class="card">
+    <div class="row">
+      <div><label>System</label><select id="sys"><option value="US">US</option><option value="SI">SI</option></select></div>
+      <div><label>n (Manning)</label><input id="n" type="number" step="0.001" placeholder="e.g., 0.013"></div>
+      <div><label>S (slope)</label><input id="S" type="number" step="0.000001" placeholder="ft/ft or m/m"></div>
+      <div><label>Mode</label><select id="mode"><option value="Q">Compute Q given D</option><option value="D">Solve D for Q</option></select></div>
+    </div>
+    <div class="row" id="grpD"><div><label>D (diameter)</label><input id="D" type="number" step="0.0001" placeholder="ft or m"></div></div>
+    <div class="row" id="grpQ" hidden><div><label>Q (target flow)</label><input id="Q" type="number" step="0.0001" placeholder="cfs or m³/s"></div></div>
+    <div class="row">
+      <button id="calc">Calculate</button>
+      <button id="copyExcel">Copy Excel (Q given D)</button>
+    </div>
+    <div id="out" class="result"></div>
+  </div>
+  <div class="ad">Ad slot</div>
+  <div class="card small">Assumes full-flowing circular conduit. For partial flow, use a separate calculator.</div>
+</main>
+
+<script type="module">
+  import {on,show,setResult,fmt,$,copy} from '../assets/app.js';
+  import {Q_given_D, solveD_for_Q, excelQgivenD} from '../calc/manning.js';
+  const mode = $('#mode'), grpD = $('#grpD'), grpQ = $('#grpQ');
+  on(mode,'change', ()=>{
+    const m = mode.value; show(grpD, m==='Q'); show(grpQ, m==='D');
+  });
+  on('calc','click', ()=>{
+    const sys=$('#sys').value, n=+$('#n').value, S=+$('#S').value;
+    if(!(n>0 && S>0)) return setResult('out','Enter positive n and S.');
+    if(mode.value==='Q'){
+      const D=+$('#D').value; if(!(D>0)) return setResult('out','Enter D.');
+      const Q = Q_given_D(D,n,S,sys);
+      const unit=(sys==='US')?'cfs':'m³/s';
+      setResult('out', `Capacity Q = <b>${fmt(Q,5)} ${unit}</b> (D=${fmt(D,4)} ${sys==='US'?'ft':'m'})`);
+    }else{
+      const Q=+$('#Q').value; if(!(Q>0)) return setResult('out','Enter Q.');
+      const D = solveD_for_Q(Q,n,S,sys);
+      const unit=(sys==='US')?'ft':'m';
+      setResult('out', `Required D ≈ <b>${fmt(D,4)} ${unit}</b> (Q=${fmt(Q,5)} ${sys==='US'?'cfs':'m³/s'})`);
+    }
+  });
+  on('copyExcel','click', ()=>{
+    const sys=$('#sys').value;
+    copy(excelQgivenD(sys));
+  });
+</script>
+</body>
+</html>
