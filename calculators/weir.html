@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weir Flow Calculator (Rectangular, Sharp-Crested)</title>
+<meta name="description" content="Compute flow over a sharp-crested rectangular weir (suppressed/contracted). US & SI.">
+<link rel="stylesheet" href="../assets/styles.css">
+</head><body>
+<header><div class="container"><h1>Weir — Rectangular, Sharp-Crested</h1><nav class="small">
+  <a href="../index.html">Home</a> · <a href="../pages/methods.html">Methods</a>
+</nav></div></header>
+<main class="container">
+  <div class="card">
+    <div class="row">
+      <div><label>System</label><select id="sys"><option value="US">US (ft, cfs)</option><option value="SI">SI (m, m³/s)</option></select></div>
+      <div><label>Width, b</label><input id="b" type="number" step="0.0001" placeholder="ft or m"></div>
+      <div><label>Head over crest, H</label><input id="H" type="number" step="0.0001" placeholder="ft or m"></div>
+      <div><label>Cd (discharge coefficient)</label><input id="Cd" type="number" step="0.01" placeholder="e.g., 0.62"></div>
+    </div>
+    <div class="row">
+      <button id="calc">Calculate Q</button>
+      <button id="copy">Copy Excel</button>
+    </div>
+    <div id="out" class="result"></div>
+  </div>
+  <div class="ad">Ad slot</div>
+  <div class="card small">Assumes sharp crest, fully aerated nappe. For contracted/suppressed nuances, consult your standard.</div>
+</main>
+<script type="module">
+  import {on,setResult,fmt,copy,$} from '../assets/app.js';
+  import {weirQ, excelWeir} from '../calc/weir.js';
+  on('calc','click', ()=>{
+    const sys=$('#sys').value, b=+$('#b').value, H=+$('#H').value, Cd=+$('#Cd').value||0.62;
+    const Q=weirQ(sys,b,H,Cd);
+    setResult('out', isFinite(Q)? `Q = <b>${fmt(Q,5)} ${sys==='US'?'cfs':'m³/s'}</b>` : 'Check inputs.');
+  });
+  on('copy','click', ()=> copy(excelWeir()));
+</script>
+</body></html>
