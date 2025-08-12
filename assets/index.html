@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Civil Engineering Calculators & Excel Formulas</title>
+<meta name="description" content="Free civil engineering calculators with copyable Excel formulas: Rational Method, Manning’s equation, weir/orifice flow, traffic AADT→PHV, and more.">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header>
+  <div class="container">
+    <div class="brand"><h1 style="margin:10px 0">Civil Calculators</h1></div>
+    <nav class="small">
+      <a href="/">Home</a>
+      <a href="pages/about.html">About</a>
+      <a href="pages/methods.html">Methods</a>
+      <a href="pages/privacy.html">Privacy</a>
+      <a href="pages/terms.html">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="ad">Ad slot</div>
+
+  <div class="card">
+    <h2>Popular Calculators</h2>
+    <div class="row">
+      <a class="card" href="calculators/rational.html">Rational Method — Peak Discharge (US & SI)</a>
+      <a class="card" href="calculators/manning.html">Manning — Full Circular Pipe (Q & required D)</a>
+      <a class="card" href="calculators/weir.html">Weir Flow — Sharp-Crested Rectangular</a>
+      <a class="card" href="calculators/orifice.html">Orifice Flow — Circular (free/submerged)</a>
+      <a class="card" href="calculators/traffic.html">Traffic — Future AADT & Peak Hour</a>
+    </div>
+  </div>
+
+  <div class="card small">
+    <strong>Disclaimer:</strong> For preliminary use only. Verify units, criteria, and assumptions for your jurisdiction. Not a substitute for sealed engineering.
+  </div>
+</main>
+
+<footer>
+  <div class="container small">© <span id="yr"></span> Civil Calculators.</div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
